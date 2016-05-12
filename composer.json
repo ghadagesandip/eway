@@ -1,0 +1,13 @@
+{
+    "name": "root/eway",
+    "authors": [
+        {
+            "name": "Sandip Ghadge",
+            "email": "sandip.ghadge@wwindia.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.4.16",
+        "eway/eway-rapid-php": "^1.3"
+    }
+}
