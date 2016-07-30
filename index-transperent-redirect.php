@@ -3,7 +3,6 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require_once 'vendor/autoload.php';
-//require('lib/eWAY/RapidAPI.php');
 
 // eWAY Credentials
 $apiKey = '60CF3ClUauoysKZKwAlX3tv5DcbYT16eVBFfRQxTsgN6rx9cJXE+JQkXT6ktQunuAKN4og';
@@ -16,8 +15,8 @@ $transaction = [
     'TokenCustomerID' => '',
     'Reference' => '',
     'Title' => '',
-    'FirstName' => 'Vijay',
-    'LastName' => 'Patil',
+    'FirstName' => 'Sandip',
+    'LastName' => 'Ghadge',
     'CompanyName' => '',
     'JobDescription' => '',
     'Street1' => 'Level 5',
@@ -32,7 +31,7 @@ $transaction = [
     'Comments' => '',
     'Fax' => '',
     'Url' => '',  //The customer’s website
-    'RedirectUrl' => "http://localhost/eway/index.php",
+    'RedirectUrl' => "http://localhost/eway/index-transperent-redirect.php",
     'TransactionType' => \Eway\Rapid\Enum\TransactionType::MOTO,
 ];
 
@@ -54,11 +53,12 @@ if ( isset($_GET['AccessCode']) ) {
             Eway test
         </title>
         <script src="bower_components/jquery/dist/jquery.min.js"></script>
+        <script src="https://secure.ewaypayments.com/scripts/eCrypt.min.js"></script>
     </head>
 
     <body>
 
-    <form method="POST" action="<?php echo $response->FormActionURL ?>" id="form1">
+    <form method="POST" action="<?php echo $response->FormActionURL ?>" id="form1" data-eway-encrypt-key="rK+VkyigBrDectc1nw9V1QuNLKbK3XvPIJtWzR9fnujAkTtN+a5QYiLDsVxc7idsJxEm4KSe1YS/uNPdtN6pa41XiXH4hHbMti0GAN052F0H2bm9Lr4vxmF/yToNXdLaZRmG68UQTyuUWcA04a6QI+hewIPEZKrI/xct535q+kQ5+kql3ctgRoJ39tvE5CPgEFH1E6LuqINB1x8bJ5qbUx6MdjEGr5NdY/s/tCbw1wb5kiZiyb+/40ZY+t5QJt3UgkSdJ5QzwatudUBYMwzA8Oq7YLg7veSBAj9o2xDjqpnjD0KsJtpdulaJ0NyHT+pzpmkO+x4h+8vA/N44rj5OHw==">
         <input type="hidden" name="EWAY_ACCESSCODE" value="<?= $response->AccessCode ?>">
         <input type="text" name="EWAY_PAYMENTTYPE" value="creditcard">
         <div id="payment">
@@ -159,7 +159,27 @@ if ( isset($_GET['AccessCode']) ) {
                 <input type="submit" id="btnSubmit" name="btnSubmit" value="Submit">
             </div>
         </div>
-
     </form>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#btnSubmit').click(function(event) {
+                $.ajax({
+                    url: '',
+                    type: 'POST',
+                    data: {
+                        card_name: $('#EWAY_CARDNAME').val(),
+                        card_number: eCrypt.encryptValue($('#EWAY_CARDNUMBER').val()),
+                        card_cvn: eCrypt.encryptValue($('#EWAY_CARDCVN').val())
+                    },
+                    success: function(data) {
+                        $('#info').html(data.response);
+                    }
+                });
+                //event.preventDefault();
+               // return false;
+            });
+        });
+    </script>
     </body>
 </html>
